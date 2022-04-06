@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dsj.dao.MemberDao">
+    <insert id="add" parameterType="member" keyProperty="id" useGeneratedKeys="true">
+        insert into t_member( fileNumber, name, sex, idCard, phoneNumber, regTime, password, email, birthday, remark)
+            values (#{fileNumber},#{name}, #{sex}, #{idCard}, #{phoneNumber}, #{regTime}, #{password}, #{email}, #{birthday}, #{remark})
+
+    </insert>
+    <select id="getMemberByTelephone" parameterType="string" resultType="com.dsj.pojo.Member">
+         select * from t_member where phoneNumber=#{telephone}
+    </select>
+    <select id="findMemberCountByMonth" parameterType="string" resultType="java.lang.Integer">
+        select count(*) from t_member where regTime
+        <![CDATA[
+          <=
+        ]]>
+        #{month}
+    </select>
+    <select id="getTodayNewMember" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member WHERE regTime = #{date}
+    </select>
+    <select id="getTotalMember"  resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member
+    </select>
+    <select id="getThisWeekAndMonthNewMember" parameterType="string" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM t_member WHERE regTime &gt;= #{date}
+    </select>
+</mapper>

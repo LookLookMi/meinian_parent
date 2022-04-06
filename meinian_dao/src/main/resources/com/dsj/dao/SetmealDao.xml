@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dsj.dao.SetmealDao">
+    <insert id="addSetmealAndTravelGroup" parameterType="map">
+        insert into t_setmeal_travelgroup(setmeal_id,travelgroup_id) values (#{setmeal_id},#{travelgroup_id})
+    </insert>
+    <insert id="add" parameterType="setmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into t_setmeal(name,code,helpCode,sex,age,price,remark,attention,img) values (#{name},#{code},#{helpCode},#{sex},#{age},#{price},#{remark},#{attention},#{img})
+    </insert>
+    <select id="findPage" parameterType="string" resultType="setmeal">
+        select * from t_setmeal
+<where>
+    <if test="value!=null and value.length>0">
+        code=#{value} or name like concat("%",#{value},"%") or helpCode=#{value}
+    </if>
+</where>
+
+    </select>
+    <select id="getSetmeal" resultType="setmeal">
+         select * from t_setmeal
+    </select>
+    <select id="findById" parameterType="int" resultMap="SetmealResultMap">
+        select * from t_setmeal where id=#{id}
+
+    </select>
+    <select id="getSetmealById" parameterType="int" resultType="com.dsj.pojo.Setmeal">
+        select * from t_setmeal where id=#{id}
+    </select>
+    <select id="getSetmealReport" resultType="java.util.Map">
+        SELECT s.name name,COUNT(o.id) value
+        FROM t_setmeal s,t_order o WHERE s.id = o.setmeal_id
+        GROUP BY s.name
+    </select>
+    <resultMap id="SetmealResultMap" type="setmeal">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="helpCode" column="helpCode"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="price" column="price"/>
+        <result property="remark" column="remark"/>
+        <result property="attention" column="attention"/>
+        <result property="img" column="img"/>
+        <collection property="travelGroups" column="id"
+                    select="com.dsj.dao.TravelGroupDao.findTravelGroupById"></collection>
+    </resultMap>
+</mapper>
